@@ -2,6 +2,7 @@ package net.buddat.wgenerator;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
+import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
@@ -83,18 +84,17 @@ public class HeightMap {
 		}
 
 		long startTime = System.currentTimeMillis();
-
 		try {
-			DataBufferUShort buffer = (DataBufferUShort) heightImage.getRaster().getDataBuffer();
+            Raster data = heightImage.getData();
 
-			int[][] array = new int[mapSize][mapSize];
+            for (int x = 0; x < mapSize; x++) {
+                for (int y = 0; y < mapSize; y++) {
 
-			for (int x = 0; x < mapSize; x++) {
-				for (int y = 0; y < mapSize; y++) {
+                    double[] dArray = null;
 
-					array[x][y] = buffer.getElem(x + y * mapSize);
+                    dArray = data.getPixel(x,y, dArray);
 
-					setHeight(x, y, getHeight(x, y) + (array[x][y] / 65536f), false);
+					setHeight(x, y, getHeight(x, y) + (dArray[0] / 65536f), false);
 				}
 			}
 
