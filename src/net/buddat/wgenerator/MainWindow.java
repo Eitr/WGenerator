@@ -19,6 +19,7 @@ import net.buddat.wgenerator.util.StreamCapturer;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.*;
+import java.awt.Taskbar.State;
 
 import javax.imageio.ImageIO;
 import java.io.*;
@@ -43,6 +44,8 @@ public class MainWindow extends JFrame {
 	private Constants.VIEW_TYPE defaultView = Constants.VIEW_TYPE.HEIGHT;
 	private ProgressHandler progress;
 
+	private Taskbar taskbar = Taskbar.getTaskbar();
+	
 	private JProgressBar progressBar;
 	private JLabel lblMemory;
 	private JPanel contentPane;
@@ -219,12 +222,14 @@ public class MainWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLocationRelativeTo(null);
 		setContentPane(contentPane);
-
+		
+		taskbar.setWindowProgressState(this, State.NORMAL);
+		
 		JTabbedPane optionsPane = new JTabbedPane(JTabbedPane.TOP);
 
 		progressBar = new JProgressBar();
 		progressBar.setStringPainted(true);
-		progressBar.setString("");
+		progressBar.setString(Constants.READY);
 		progressBar.setEnabled(true);
 		progressBar.setValue(100);
 
@@ -1368,7 +1373,7 @@ public class MainWindow extends JFrame {
 		setupButtonActions();
 		setRockTotal();
 		updateMapCoords(0,0,false);
-		progress = new ProgressHandler(progressBar,lblMemory);
+		progress = new ProgressHandler(progressBar,lblMemory, taskbar, this);
 		progress.update(100);
 		System.setErr(new PrintStream(new StreamCapturer(System.err,this)));
 
@@ -1712,7 +1717,8 @@ public class MainWindow extends JFrame {
 	}
 
 	private void stopLoading() {
-		progress.update(100,"");
+		progress.update(100, Constants.READY);
+		taskbar.setWindowProgressValue(this, 0);
 	}
 
 	boolean actionReady() {
@@ -2014,11 +2020,13 @@ public class MainWindow extends JFrame {
 
 			for (int i = 0; i < heightMap.getMapSize(); i++) {
 				for (int j = 0; j < heightMap.getMapSize(); j++) {
-					progress.update((int)((float)(i*heightMap.getMapSize()+j)/(heightMap.getMapSize()*heightMap.getMapSize())*100f));
+					int prog = (int)((float)(i*heightMap.getMapSize()+j)/(heightMap.getMapSize()*heightMap.getMapSize())*100f);
+					taskbar.setWindowProgressValue(this, prog);
+					progress.update(prog);
 					tileMap.addDirt(i, j, 0);
 				}
 			}
-
+			
 			updateMapView();
 
 			genHistory.add("RESETBIOMES:null"); 
@@ -2472,7 +2480,9 @@ public class MainWindow extends JFrame {
 			Graphics g = mapPanel.getMapImage().getGraphics();
 
 			for (int i = 0; i < heightMap.getMapSize(); i++) {
-				progress.update((int)((float)i/heightMap.getMapSize()*98f));
+				int prog = (int)((float)i/heightMap.getMapSize()*98f);
+				taskbar.setWindowProgressValue(this, prog);
+				progress.update(prog);
 				for (int j = 0; j < heightMap.getMapSize(); j++) {
 					g.setColor(new Color((float) heightMap.getHeight(i, j), (float) heightMap.getHeight(i, j), (float) heightMap.getHeight(i, j)));
 					g.fillRect(i, j, 1, 1);
@@ -2504,7 +2514,9 @@ public class MainWindow extends JFrame {
 
 		try {
 			for (int i = 0; i < heightMap.getMapSize(); i++) {
-				progress.update((int)((float)i/heightMap.getMapSize()*100f/3));
+				int prog = (int)((float)i/heightMap.getMapSize()*100f/3);
+				taskbar.setWindowProgressValue(this, prog);
+				progress.update(prog);
 				for (int j = 0; j < heightMap.getMapSize(); j++) {
 					map.setSurfaceHeight(i, j, tileMap.getSurfaceHeight(i, j));
 					map.setRockHeight(i, j, tileMap.getRockHeight(i, j));
@@ -2516,7 +2528,9 @@ public class MainWindow extends JFrame {
 				}
 			}
 			for (int i = 0; i < heightMap.getMapSize(); i++) {
-				progress.update((int)((float)i/heightMap.getMapSize()*100f/3)+33);
+				int prog = (int)((float)i/heightMap.getMapSize()*100f/3)+33;
+				taskbar.setWindowProgressValue(this, prog);
+				progress.update(prog);
 				for (int j = 0; j < heightMap.getMapSize(); j++) {
 					if(tileMap.getType(i, j) != Tile.TILE_ROCK && !tileMap.getType(i, j).isTree() && !tileMap.getType(i, j).isBush()) {
 						for(int x = i - 1; x <= i + 1; x++) {
@@ -2531,7 +2545,9 @@ public class MainWindow extends JFrame {
 				}
 			}
 			for (int i = 0; i < heightMap.getMapSize(); i++) {
-				progress.update((int)((float)i/heightMap.getMapSize()*100f/3)+66);
+				int prog = (int)((float)i/heightMap.getMapSize()*100f/3)+66;
+				taskbar.setWindowProgressValue(this, prog);
+				progress.update(prog);
 				for (int j = 0; j < heightMap.getMapSize(); j++) {
 					if (tileMap.getType(i, j).isTree()) {
 						map.setTree(i, j, tileMap.getType(i, j).getTreeType((byte) 0), FoliageAge.values()[treeRand.nextInt(FoliageAge.values().length)], GrowthTreeStage.MEDIUM);
