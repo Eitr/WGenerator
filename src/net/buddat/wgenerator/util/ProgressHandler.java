@@ -36,9 +36,9 @@ public class ProgressHandler {
 		progressBar.setString(text);
 		taskbar.setWindowProgressValue(mainWindow, value);
 		if(value == 100) {
-			mainWindow.setTitle(Constants.WINDOW_TITLE + " - " + "Ready");
+			mainWindow.setTitle(Constants.WINDOW_TITLE + " - v " + Constants.version + " - " + "Ready");
 		}else {
-			mainWindow.setTitle(Constants.WINDOW_TITLE + " - " + text + ": " + value + "%");
+			mainWindow.setTitle(Constants.WINDOW_TITLE + " - v " + Constants.version + " - " + text + ": " + value + "%");
 		}
 		
 		setMemoryUsage();
