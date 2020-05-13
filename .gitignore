@@ -13,3 +13,8 @@ hs_err_pid*
 
 #generated maps
 /maps
+
+# IntelliJ project files
+.idea
+*.iml
+out
