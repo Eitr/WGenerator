@@ -5,8 +5,9 @@ package net.buddat.wgenerator.util;
  */
 public class Constants {
 
-	public static final String version = "2.9.0";
+	public static final String version = "2.9.1";
 	public static final String WINDOW_TITLE = "Map Generator for Wurm Unlimited";
+	public static final String READY = "Ready";
 
 	public static final int MAP_SIZE = 2048;
 	public static final int MAP_HEIGHT = 4096;

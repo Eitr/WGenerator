@@ -1,15 +1,24 @@
 package net.buddat.wgenerator.util;
 
+import java.awt.Taskbar;
+
 import javax.swing.*;
+
+import net.buddat.wgenerator.MainWindow;
 
 public class ProgressHandler {
 
-	JProgressBar progressBar;
-	JLabel lblMemory;
+	private JProgressBar progressBar;
+	private JLabel lblMemory;
 	
-	public ProgressHandler(JProgressBar progress, JLabel memory) {
-		progressBar = progress;
-		lblMemory = memory;
+	private Taskbar taskbar;
+	private MainWindow mainWindow;
+	
+	public ProgressHandler(JProgressBar progress, JLabel memory, Taskbar taskbar, MainWindow mainWindow) {
+		this.progressBar = progress;
+		this.lblMemory = memory;
+		this.taskbar = taskbar;
+		this.mainWindow = mainWindow;
 	}
 	
 	private void setMemoryUsage() {
@@ -25,6 +34,13 @@ public class ProgressHandler {
 	public void update(int value, String text) {
 		progressBar.setValue(value);
 		progressBar.setString(text);
+		taskbar.setWindowProgressValue(mainWindow, value);
+		if(value == 100) {
+			mainWindow.setTitle(Constants.WINDOW_TITLE + " - v " + Constants.version + " - " + "Ready");
+		}else {
+			mainWindow.setTitle(Constants.WINDOW_TITLE + " - v " + Constants.version + " - " + text + ": " + value + "%");
+		}
+		
 		setMemoryUsage();
 	}
 	

@@ -1,7 +1,5 @@
 package com.wurmonline.wurmapi.api;
 
-import com.wurmonline.wurmapi.api.map.dump.Colorist;
-
 import java.io.File;
 import java.io.IOException;
 
